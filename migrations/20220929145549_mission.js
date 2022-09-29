@@ -6,7 +6,7 @@ export function up(knex) {
   return knex.schema.createTable("mission", (table) => {
     table.increments("msn_id");
     table.string("msn_title");
-    table.dateTime("msn_date");
+    table.dateTime("msn_date", { precision: 6 }).defaultTo(knex.fn.now(6));
     table.integer("msn_type");
     table.foreign("msn_type").references("mission_type.msn_type_id");
     table.string("msn_obj", 1000);
