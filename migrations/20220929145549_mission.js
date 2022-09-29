@@ -9,13 +9,13 @@ export function up(knex) {
     table.dateTime("msn_date");
     table.integer("msn_type");
     table.foreign("msn_type").references("mission_type.msn_type_id");
-    table.string("msn_obj");
+    table.string("msn_obj", 1000);
     table.string("supporting_players");
-    table.string("situation");
+    table.string("situation", 1000);
     table.string("key_grids");
-    table.string("fires");
+    table.string("fires", 1000);
     table.string("assets");
-    table.string("intel");
+    table.string("intel", 1000);
     table.string("comms");
     table.integer("user_id");
     table.foreign("user_id").references("user_table.id");
