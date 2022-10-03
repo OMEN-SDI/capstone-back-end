@@ -1,6 +1,6 @@
 import express from "express";
 import cors from "cors";
-import bcrypt from "bcrypt";
+import bcrypt, { hash } from "bcrypt";
 import {
   getAllMissions,
   getAllUsers,
@@ -13,6 +13,8 @@ import {
   patchExistingUser,
   deleteUser,
   deleteFavoriteMission,
+  postLoggedInUser,
+  getUser,
 } from "./controllers.js";
 
 export const app = express();
@@ -72,7 +74,7 @@ app.post("/missions", (req, res) => {
     );
 });
 
-app.post("/users", async (req, res) => {
+app.post("/register", async (req, res) => {
   const { first_name, last_name, password, username, email } = req.body;
   const hash = await bcrypt.hash(password, 12);
   const user = ({
@@ -86,6 +88,19 @@ app.post("/users", async (req, res) => {
     .then((data) => res.status(201).send({ message: "Created user!" }))
     .catch((err) => res.status(404).json({ message: "Could not add user!" }));
 });
+
+app.post("/login", async (req, res) => {
+  const { username, password } = req.body;
+  // find user in user table
+  const user = (await getAllUsers()).find(user => user.username === username);
+  // check if username is valid
+  if( !user ) return res.status(403).json({ message: 'bad login'});
+  // compare hashed password and set to variable 'match'
+  const match = await bcrypt.compare(password, user.password);
+  // check if there's a matching password 
+  if (!match) return res.status(403).json({ message: 'bad login' });
+  res.status(200).json({ success: true, user });  
+})
 
 app.post("/favoritemissions", (req, res) => {
   const favoriteMission = req.body;

@@ -16,12 +16,20 @@ export function getAllFavoriteMissionsByUser(id) {
   return myKnex("favorite_mission").where("user_id", "=", `${id}`);
 }
 
+export function getUser(user) {
+  return myKnex("user_table").where("username", "=", `${user.id}`);
+}
+
 export function postNewMission(newMission) {
   return myKnex("mission").insert(newMission);
 }
 
 export function postNewUser(newUser) {
   return myKnex("user_table").insert(newUser);
+}
+
+export function postLoggedInUser(user) {
+  return myKnex("user_table").where("id", "=", `${user.id}`)
 }
 
 export function postNewFavoriteMission(NewFavoriteMission) {
