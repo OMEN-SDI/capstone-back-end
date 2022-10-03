@@ -1,5 +1,6 @@
 import express from "express";
 import cors from "cors";
+import bcrypt from "bcrypt";
 import {
   getAllMissions,
   getAllUsers,
@@ -71,8 +72,16 @@ app.post("/missions", (req, res) => {
     );
 });
 
-app.post("/users", (req, res) => {
-  const user = req.body;
+app.post("/users", async (req, res) => {
+  const { first_name, last_name, password, username, email } = req.body;
+  const hash = await bcrypt.hash(password, 12);
+  const user = ({
+    first_name,
+    last_name,
+    username,
+    password: hash,
+    email
+  })
   postNewUser(user)
     .then((data) => res.status(201).send({ message: "User Created!" }))
     .catch((err) =>
