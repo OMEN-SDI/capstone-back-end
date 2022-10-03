@@ -12,18 +12,51 @@ import {
   patchExistingMission,
   patchExistingUser,
   deleteUser,
+  deleteMission,
   deleteFavoriteMission,
   postLoggedInUser,
   getUser,
 } from "./controllers.js";
+import session from "express-session";
 
 export const app = express();
 
 app.use(cors());
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+app.use(session({ secret: 'thisisatestsecret', saveUninitialized: false, resave: false }));
+
+const requireLogin = (req, res, next) => {
+  if(!req.session.username){
+      return res.redirect('/login');
+  }
+  next();
+}
 
 app.get("/", (req, res) => {
   res.status(200).send("Welcome to the server!");
+});
+
+app.get("/register", (req, res) => {
+  res.render('register');
+})
+
+app.post("/register", async (req, res) => {
+  const { first_name, last_name, password, username, email } = req.body;
+  const hash = await bcrypt.hash(password, 12);
+  const user = ({
+    first_name,
+    last_name,
+    username,
+    password: hash,
+    email
+  })
+  postNewUser(user)
+    .then((data) => res.status(201).send({ message: "User Created!" }))
+    .catch((err) =>
+      res.status(404).json({ message: "Could not create user!" })
+    );
+  res.redirect('/userpage');
 });
 
 app.get("/missions", (req, res) => {
@@ -74,22 +107,6 @@ app.post("/missions", (req, res) => {
     );
 });
 
-app.post("/register", async (req, res) => {
-  const { first_name, last_name, password, username, email } = req.body;
-  const hash = await bcrypt.hash(password, 12);
-  const user = ({
-    first_name,
-    last_name,
-    username,
-    password: hash,
-    email
-  })
-  postNewUser(user)
-    .then((data) => res.status(201).send({ message: "User Created!" }))
-    .catch((err) =>
-      res.status(404).json({ message: "Could not create user!" })
-    );
-});
 
 app.post("/login", async (req, res) => {
   const { username, password } = req.body;
@@ -102,6 +119,12 @@ app.post("/login", async (req, res) => {
   // check if there's a matching password 
   if (!match) return res.status(403).json({ message: 'bad login' });
   res.status(200).json({ success: true, user });  
+})
+
+app.post('/logout', (req, res) => {
+  req.session.destroy((err) => {
+    res.redirect('/') 
+  })
 })
 
 app.post("/favoritemissions", (req, res) => {
@@ -142,6 +165,20 @@ app.delete("/users/:id", (req, res) => {
     .then((data) => res.status(202).send({ message: "User deleted!" }))
     .catch((err) =>
       res.status(404).json({ message: "Could not delete user!" })
+    );
+});
+
+app.delete("/missions/:id", (req, res) => {
+  const { id } = req.params;
+
+  deleteMission(id)
+    .then((data) =>
+      res.status(202).send({ message: "Mission removed from missions!" })
+    )
+    .catch((err) =>
+      res
+        .status(404)
+        .json({ message: "Could not remove mission from missions!" })
     );
 });
 

@@ -50,6 +50,10 @@ export function deleteUser(userId) {
   return myKnex("user_table").where({ id: userId }).del();
 }
 
+export function deleteMission(id) {
+  return myKnex("mission").where({ msn_id: id }).del();
+}
+
 export function deleteFavoriteMission(favoriteId) {
   return myKnex("favorite_mission").where({ favorite_id: favoriteId }).del();
 }
