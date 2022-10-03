@@ -85,8 +85,10 @@ app.post("/register", async (req, res) => {
     email
   })
   postNewUser(user)
-    .then((data) => res.status(201).send({ message: "Created user!" }))
-    .catch((err) => res.status(404).json({ message: "Could not add user!" }));
+    .then((data) => res.status(201).send({ message: "User Created!" }))
+    .catch((err) =>
+      res.status(404).json({ message: "Could not create user!" })
+    );
 });
 
 app.post("/login", async (req, res) => {
