@@ -18,28 +18,89 @@ import {
   getUser,
 } from "./controllers.js";
 import session from "express-session";
+import bodyParser from "body-parser";
+import path from "path";
 
 export const app = express();
 
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(session({ secret: 'thisisatestsecret', saveUninitialized: false, resave: false }));
+// app.use(express.static(path.join(__dirname, 'public')));
+const sessionOptions = { secret: 'thisisatestsecret', saveUninitialized: false, resave: false };
+// app.use(session({ secret: 'Keep it secret', name: 'uniqueSessionID', saveUninitialized: false, resave: false }))
+app.use(session(sessionOptions));
 
-const requireLogin = (req, res, next) => {
-  if(!req.session.username){
-      return res.redirect('/login');
-  }
-  next();
-}
 
-app.get("/", (req, res) => {
-  res.status(200).send("Welcome to the server!");
-});
+// const requireLogin = (req, res, next) => {
+//   if(!req.session.loggedIn){
+//       return res.redirect('/login');
+//   }
+//   next();
+// }
 
-app.get("/register", (req, res) => {
-  res.render('register');
+//**TESTING ROUTE */
+//*************************************************** */
+// app.get('/test', (req, res) => {
+//   if (req.session.loggedIn)
+//     res.redirect('/userpage')
+//   else
+//     res.sendFile('index.html', { root: path.join(__dirname, '/public') })
+// })
+
+// app.get('/userpageTest', (req, res) => {
+//   if (req.session.loggedIn) {
+//     res.setHeader('Content-Type', 'text/html')
+//     res.write(`Welcome ${req.session.username} to your dashboard`)
+//     // res.write('<a href="/logout">Logout</a>')
+//     res.end()
+//   }
+//   else
+//     res.redirect('/login')
+// })
+
+app.get('/ianstest', (req, res) =>{
+  
 })
+//*************************************************** */
+//**TESTING ROUTE */
+
+app.get('/countview', (req, res) => {
+  if(req.session.count) {
+    req.session.count += 1;
+  } else {
+    req.session.count = 1;
+  }
+  res.send(`You have viewed this page ${req.session.count} times`)
+})
+
+app.get("/registerTwo", (req, res) => {
+  const { username = 'Billy' } = req.query;
+  req.session.username = username;
+  res.redirect('/greet');
+})
+
+app.get('/greet', (req,res) =>{
+  // const { username } = req.session;
+  res.send(`Welcome back`)
+})
+
+app.get('/', (req,res) =>{
+  res.send('Welcome to the server!')
+  res.redirect('/greet');
+})
+
+// const sessionConfig = {
+//   resave: false,
+//   saveUninitialized: true,
+//   cookie: {
+//       httpOnly: true,
+//       expires: Date.now() + 1000 * 60 * 60 * 24 * 7,
+//       maxAge: 1000 * 60 * 60 * 24 * 7
+//   }
+// }
+
+// app.use(session(sessionConfig));
 
 app.post("/register", async (req, res) => {
   const { first_name, last_name, password, username, email } = req.body;
@@ -67,6 +128,7 @@ app.get("/missions", (req, res) => {
         .status(404)
         .json({ message: "No missions found matching this search!" })
     );
+ 
 });
 
 app.get("/users", (req, res) => {
@@ -108,23 +170,33 @@ app.post("/missions", (req, res) => {
 });
 
 
+
 app.post("/login", async (req, res) => {
   const { username, password } = req.body;
-  // find user in user table
   const user = (await getAllUsers()).find(user => user.username === username);
-  // check if username is valid
-  if( !user ) return res.status(403).json({ message: 'bad login'});
-  // compare hashed password and set to variable 'match'
+  // if(user) {
+  //   req.session.username = user.username;    
+  // } else {
+  //   res.redirect('/login');
+  // }
+  if (!user) return res.status(403).json({ message: 'bad login' });
   const match = await bcrypt.compare(password, user.password);
-  // check if there's a matching password 
   if (!match) return res.status(403).json({ message: 'bad login' });
-  res.status(200).json({ success: true, user });  
+  res.status(200).json({ success: true, user });
 })
 
 app.post('/logout', (req, res) => {
-  req.session.destroy((err) => {
-    res.redirect('/') 
-  })
+  if (req.session) {
+    req.session.destroy(err => {
+      if (err) {
+        res.status(400).send('Unable to log out')
+      } else {
+        res.redirect('/login')
+      }
+    });
+  } else {
+    res.end()
+  }
 })
 
 app.post("/favoritemissions", (req, res) => {
