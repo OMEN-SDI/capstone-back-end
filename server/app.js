@@ -77,13 +77,13 @@ app.post("/missions", (req, res) => {
 app.post("/register", async (req, res) => {
   const { first_name, last_name, password, username, email } = req.body;
   const hash = await bcrypt.hash(password, 12);
-  const user = ({
+  const user = {
     first_name,
     last_name,
     username,
     password: hash,
-    email
-  })
+    email,
+  };
   postNewUser(user)
     .then((data) => res.status(201).send({ message: "User Created!" }))
     .catch((err) =>
@@ -94,22 +94,28 @@ app.post("/register", async (req, res) => {
 app.post("/login", async (req, res) => {
   const { username, password } = req.body;
   // find user in user table
-  const user = (await getAllUsers()).find(user => user.username === username);
+  const user = (await getAllUsers()).find((user) => user.username === username);
   // check if username is valid
-  if( !user ) return res.status(403).json({ message: 'bad login'});
+  if (!user) return res.status(403).json({ message: "bad login" });
   // compare hashed password and set to variable 'match'
   const match = await bcrypt.compare(password, user.password);
-  // check if there's a matching password 
-  if (!match) return res.status(403).json({ message: 'bad login' });
-  res.status(200).json({ success: true, user });  
-})
+  // check if there's a matching password
+  if (!match) return res.status(403).json({ message: "bad login" });
+  res.status(200).json({ success: true, user });
+});
 
 app.post("/favoritemissions", (req, res) => {
   const favoriteMission = req.body;
   postNewFavoriteMission(favoriteMission)
-    .then((data) =>
-      res.status(201).send({ message: "Mission added to favorites!" })
-    )
+    .then(() => {
+      getAllFavoriteMissionsByUser(favoriteMission.user_id)
+        .then((data) => res.status(200).send(data))
+        .catch((err) =>
+          res.status(404).json({
+            message: err + "No favorite missions found matching this search!",
+          })
+        );
+    })
     .catch((err) =>
       res.status(404).json({ message: "Could not add mission to favorites!" })
     );
@@ -145,16 +151,20 @@ app.delete("/users/:id", (req, res) => {
     );
 });
 
-app.delete("/favoritemissions/:id", (req, res) => {
-  const { id } = req.params;
-
-  deleteFavoriteMission(id)
-    .then((data) =>
-      res.status(202).send({ message: "Mission removed from favorites!" })
-    )
-    .catch((err) =>
-      res
-        .status(404)
-        .json({ message: "Could not remove mission from favorites!" })
-    );
+app.delete("/favoritemissions", (req, res) => {
+  const { favorite_id, user_id } = req.body;
+  deleteFavoriteMission(favorite_id).then(() => {
+    getAllFavoriteMissionsByUser(user_id)
+      .then((data) => res.status(200).send(data))
+      .catch((err) =>
+        res.status(404).json({
+          message: "No favorite missions found matching this search!",
+        })
+      );
+  });
+  // .catch((err) =>
+  //   res
+  //     .status(404)
+  //     .json({ message: "Could not remove mission from favorites!" })
+  // );
 });
