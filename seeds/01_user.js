@@ -20,19 +20,5 @@ export async function seed(knex) {
       password: "password123",
       email: "clodexample@gmail.com",
     },
-    {
-      first_name: "Jacob",
-      last_name: "Bodenbender",
-      username: "mustache",
-      password: "password123",
-      email: "jbodenbender10@gmail.com",
-    },
-    {
-      first_name: "Mark",
-      last_name: "Scarna",
-      username: "markscarna",
-      password: "password1234",
-      email: "markscarna@gmail.com",
-    },
   ]);
 }
