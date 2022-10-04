@@ -56,7 +56,7 @@ app.post("/register", async (req, res) => {
     .catch((err) =>
       res.status(404).json({ message: "Could not create user!" })
     );
-  res.redirect('/userpage');
+  // res.redirect('/userpage');
 });
 
 app.get("/missions", (req, res) => {
