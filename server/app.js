@@ -88,7 +88,9 @@ app.get("/greet", (req, res) => {
 
 app.get("/", (req, res) => {
   res.send("Welcome to the server!");
-  res.redirect("/greet");
+
+  //this test was causing an error so i took it out -ian
+  // res.redirect("/greet");
 });
 
 app.post("/register", async (req, res) => {
@@ -289,6 +291,9 @@ app.delete("/missions/:id", (req, res) => {
     .catch((err) =>
       res
         .status(404)
-        .json({ message: "Could not remove mission from missions!" })
+        .json({
+          message: "Could not remove mission from missions!",
+          error: err,
+        })
     );
 });

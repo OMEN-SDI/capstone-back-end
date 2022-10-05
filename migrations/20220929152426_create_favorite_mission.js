@@ -6,7 +6,7 @@ export function up(knex) {
   return knex.schema.createTable("favorite_mission", (table) => {
     table.increments("favorite_id");
     table.integer("msn_id");
-    table.foreign("msn_id").references("mission.msn_id");
+    table.foreign("msn_id").references("mission.msn_id").onDelete("CASCADE");
     table.integer("user_id");
     table.foreign("user_id").references("user_table.id");
   });

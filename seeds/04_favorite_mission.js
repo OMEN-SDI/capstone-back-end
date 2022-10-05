@@ -4,6 +4,7 @@
  */
 export async function seed(knex) {
   // Deletes ALL existing entries
+  await knex.schema.raw("TRUNCATE favorite_mission CASCADE");
   await knex("favorite_mission").del();
   await knex("favorite_mission").insert([
     { msn_id: 1, user_id: 1 },
