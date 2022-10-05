@@ -88,7 +88,9 @@ app.get("/greet", (req, res) => {
 
 app.get("/", (req, res) => {
   res.send("Welcome to the server!");
-  res.redirect("/greet");
+
+  //this test was causing an error so i took it out -ian
+  // res.redirect("/greet");
 });
 
 // const sessionConfig = {
