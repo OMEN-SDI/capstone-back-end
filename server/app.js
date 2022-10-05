@@ -302,6 +302,9 @@ app.delete("/missions/:id", (req, res) => {
     .catch((err) =>
       res
         .status(404)
-        .json({ message: "Could not remove mission from missions!" })
+        .json({
+          message: "Could not remove mission from missions!",
+          error: err,
+        })
     );
 });

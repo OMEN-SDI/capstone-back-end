@@ -4,6 +4,7 @@
  */
 export async function seed(knex) {
   // Deletes ALL existing entries
+  await knex.schema.raw("TRUNCATE mission CASCADE");
   await knex("mission").del();
   await knex("mission").insert([
     {
