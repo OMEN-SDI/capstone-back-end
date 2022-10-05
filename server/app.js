@@ -91,18 +91,6 @@ app.get("/", (req, res) => {
   res.redirect("/greet");
 });
 
-// const sessionConfig = {
-//   resave: false,
-//   saveUninitialized: true,
-//   cookie: {
-//       httpOnly: true,
-//       expires: Date.now() + 1000 * 60 * 60 * 24 * 7,
-//       maxAge: 1000 * 60 * 60 * 24 * 7
-//   }
-// }
-
-// app.use(session(sessionConfig));
-
 app.post("/register", async (req, res) => {
   const { first_name, last_name, password, username, email } = req.body;
   const hash = await bcrypt.hash(password, 12);
@@ -118,7 +106,6 @@ app.post("/register", async (req, res) => {
     .catch((err) =>
       res.status(404).json({ message: "Could not create user!" })
     );
-  // res.redirect('/userpage');
 });
 
 app.get("/missions", (req, res) => {
