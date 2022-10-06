@@ -22,6 +22,7 @@ export function up(knex) {
     table.string("location");
     table.string("latitude");
     table.string("longitude");
+    
   });
 }
 

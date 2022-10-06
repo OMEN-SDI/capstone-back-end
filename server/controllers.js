@@ -29,7 +29,7 @@ export function postNewUser(newUser) {
 }
 
 export function postLoggedInUser(user) {
-  return myKnex("user_table").where("id", "=", `${user.id}`)
+  return myKnex("user_table").where("id", "=", `${user.id}`);
 }
 
 export function postNewFavoriteMission(NewFavoriteMission) {

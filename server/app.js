@@ -18,13 +18,13 @@ import {
   getUser,
 } from "./controllers.js";
 import session from "express-session";
-import bodyParser from "body-parser";
-import path from "path";
+import cookieParser from "cookie-parser";
 
 export const app = express();
 
-app.use(cors());
+app.use(cors({ credentials: true, origin: "http://localhost:3000" }));
 app.use(express.json());
+app.use(cookieParser());
 app.use(express.urlencoded({ extended: true }));
 // app.use(express.static(path.join(__dirname, 'public')));
 const sessionOptions = {
@@ -176,6 +176,12 @@ app.post("/register", async (req, res) => {
 });
 
 app.post("/login", async (req, res) => {
+  var opts = {
+    maxAge: 900000,
+    // httpOnly: true,
+    // secure: true,
+  };
+
   const { username, password } = req.body;
   // find user in user table
   const user = (await getAllUsers()).find((user) => user.username === username);
@@ -185,7 +191,11 @@ app.post("/login", async (req, res) => {
   const match = await bcrypt.compare(password, user.password);
   // check if there's a matching password
   if (!match) return res.status(403).json({ message: "bad login" });
-  res.status(200).json({ success: true, user });
+  res.cookie("userCredentials", {}, opts);
+  res.cookie("isLoggedIn", true, opts);
+  res.json({ success: true, user }).end();
+  // res.cookie("mark", "bo", opts);
+  // res.end();
 });
 
 // app.post("/login", async (req, res) => {
@@ -289,11 +299,9 @@ app.delete("/missions/:id", (req, res) => {
       res.status(202).send({ message: "Mission removed from missions!" })
     )
     .catch((err) =>
-      res
-        .status(404)
-        .json({
-          message: "Could not remove mission from missions!",
-          error: err,
-        })
+      res.status(404).json({
+        message: "Could not remove mission from missions!",
+        error: err,
+      })
     );
 });
