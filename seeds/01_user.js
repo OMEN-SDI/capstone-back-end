@@ -7,18 +7,18 @@ export async function seed(knex) {
   await knex("user_table").del();
   await knex("user_table").insert([
     {
-      first_name: "Ian",
-      last_name: "Gardocki",
-      username: "IGardocki",
+      first_name: "John",
+      last_name: "Snuffy",
+      username: "JSnuffy",
       password: "password123",
-      email: "ian.d.gardocki@gmail.com",
+      email: "jsnuffy@gmail.com",
     },
     {
-      first_name: "Joshua",
-      last_name: "Clodfelter",
-      username: "clodman",
+      first_name: "Jimmy",
+      last_name: "Carter",
+      username: "jCarter",
       password: "password123",
-      email: "clodexample@gmail.com",
+      email: "jcarter@gmail.com",
     },
   ]);
 }
