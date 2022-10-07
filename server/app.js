@@ -23,7 +23,9 @@ import cookieParser from "cookie-parser";
 export const app = express();
 
 // useful for local running
-app.use(cors({ credentials: true, origin: "http://localhost:3000" }));
+// app.use(cors({ credentials: true, origin: "http://localhost:3000" }));
+
+app.use(cors({ credentials: true}));
 
 // app.use(cors());
 app.use(express.json());
