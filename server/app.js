@@ -188,7 +188,7 @@ app.post("/login", async (req, res) => {
     sameSite: "none",
     secure: true,
 
-    httpOnly: true,
+    // httpOnly: true,
     domain: 'https://omen-database.herokuapp.com/'
     // httpOnly: true,
     // secure: true,
