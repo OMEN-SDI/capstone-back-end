@@ -183,7 +183,10 @@ app.post("/register", async (req, res) => {
 app.post("/login", async (req, res) => {
   var opts = {
     maxAge: 900000,
+
     // troubleshooting heroku
+    sameSite: None, 
+    secure: true
     // domain: 'https://omen-database.herokuapp.com/'
     // httpOnly: true,
     // secure: true,
