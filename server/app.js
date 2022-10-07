@@ -124,7 +124,7 @@ app.get("/users", (req, res) => {
   getAllUsers()
     .then((data) => res.status(200).send(data))
     .catch((err) =>
-      res.status(404).json({ message: "No users found matching this search!" })
+      res.status(404).json({ message: err })
     );
 });
 
