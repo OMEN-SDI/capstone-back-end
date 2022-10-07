@@ -25,7 +25,7 @@ export const app = express();
 // useful for local running
 // app.use(cors({ credentials: true, origin: "http://localhost:3000" }));
 
-app.use(cors({ credentials: true}));
+app.use(cors({ credentials: true, origin: "https://omen-front-end.herokuapp.com" }));
 
 // app.use(cors());
 app.use(express.json());
