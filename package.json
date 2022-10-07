@@ -6,7 +6,10 @@
   "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "nodemon ./server/index.js"
+
+    "start:local": "nodemon ./server/index.js",
+    "start": "npm run knex:startup && node ./server/index.js",
+    "knex:startup": "npx knex migrate:rollback && npx knex migrate:latest && npx knex seed:run"
   },
   "repository": {
     "type": "git",
