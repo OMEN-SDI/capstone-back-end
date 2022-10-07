@@ -67,7 +67,7 @@ app.use(session(sessionOptions));
 //     res.redirect('/login')
 // })
 
-app.get("/ianstest", (req, res) => {});
+app.get("/ianstest", (req, res) => { });
 //*************************************************** */
 //**TESTING ROUTE */
 
@@ -185,9 +185,11 @@ app.post("/login", async (req, res) => {
     maxAge: 900000,
 
     // troubleshooting heroku
-    sameSite: None, 
-    secure: true
-    // domain: 'https://omen-database.herokuapp.com/'
+    sameSite: "none",
+    secure: true,
+
+    httpOnly: true,
+    domain: 'https://omen-database.herokuapp.com/'
     // httpOnly: true,
     // secure: true,
   };
