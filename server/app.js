@@ -22,7 +22,10 @@ import cookieParser from "cookie-parser";
 
 export const app = express();
 
-app.use(cors({ credentials: true, origin: "http://localhost:3000" }));
+// useful for local running
+// app.use(cors({ credentials: true, origin: "http://localhost:3000" }));
+
+app.use(cors());
 app.use(express.json());
 app.use(cookieParser());
 app.use(express.urlencoded({ extended: true }));
@@ -178,6 +181,8 @@ app.post("/register", async (req, res) => {
 app.post("/login", async (req, res) => {
   var opts = {
     maxAge: 900000,
+    // troubleshooting heroku
+    domain: 'https://omen-database.herokuapp.com/'
     // httpOnly: true,
     // secure: true,
   };
