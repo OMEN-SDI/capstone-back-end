@@ -25,7 +25,9 @@ export const app = express();
 // useful for local running
 // app.use(cors({ credentials: true, origin: "http://localhost:3000" }));
 
-app.use(cors({ credentials: true, origin: "https://omen-front-end.herokuapp.com" }));
+app.use(
+  cors({ credentials: true, origin: "https://omen-front-end.herokuapp.com" })
+);
 
 // app.use(cors());
 app.use(express.json());
@@ -67,7 +69,7 @@ app.use(session(sessionOptions));
 //     res.redirect('/login')
 // })
 
-app.get("/ianstest", (req, res) => { });
+app.get("/ianstest", (req, res) => {});
 //*************************************************** */
 //**TESTING ROUTE */
 
@@ -128,9 +130,7 @@ app.get("/missions", (req, res) => {
 app.get("/users", (req, res) => {
   getAllUsers()
     .then((data) => res.status(200).send(data))
-    .catch((err) =>
-      res.status(404).json({ message: err })
-    );
+    .catch((err) => res.status(404).json({ message: err }));
 });
 
 app.get("/missiontypes", (req, res) => {
@@ -189,7 +189,7 @@ app.post("/login", async (req, res) => {
     secure: true,
 
     // httpOnly: true,
-    domain: 'https://omen-database.herokuapp.com/'
+    domain: "https://omen-database.herokuapp.com/",
     // httpOnly: true,
     // secure: true,
   };
