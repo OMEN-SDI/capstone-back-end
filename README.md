@@ -10,6 +10,26 @@ Google Docs: https://docs.google.com/document/d/13Q4tbENfxAfCO9qVy6zerPJf-4Yj7Ka
 
 ![schema](https://user-images.githubusercontent.com/75449881/193062041-02f696c3-491f-4892-ace3-27f7a1cff9ca.png)
 
+ENDPOINTS:
+GET
+/missions - shows all missions
+/users - shows all users
+/missiontype -shows all available mission types
+/favoritemissions/:userid - should show favorite missions the user has saved
+
+POST
+/missions - creates a mission
+/users - creates a user
+/favoritemissions - creates a favorite mission
+
+PATCH
+/missions/:id - updates a mission
+/users/:id - updates a user
+
+DELETE
+/users/:id - deletes a user
+/favoritemissions/:missionid - should be able to delete a favorite mission
+
 ---
 
 **If you have any suggestions for improvements to this readme, find mistakes, or even just notice a spelling or grammar error, please feel free to submit a pull request!**
