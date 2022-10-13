@@ -58,8 +58,6 @@ export function deleteFavoriteMission(favoriteId) {
   return myKnex("favorite_mission").where({ favorite_id: favoriteId }).del();
 }
 
-// export default getAllMissions;
-
 // ENDPOINTS:
 // GET
 // /missions - shows all missions

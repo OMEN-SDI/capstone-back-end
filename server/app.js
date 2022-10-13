@@ -1,6 +1,6 @@
 import express from "express";
 import cors from "cors";
-import bcrypt, { hash } from "bcrypt";
+import bcrypt from "bcrypt";
 import {
   getAllMissions,
   getAllUsers,
@@ -14,8 +14,6 @@ import {
   deleteUser,
   deleteMission,
   deleteFavoriteMission,
-  postLoggedInUser,
-  getUser,
 } from "./controllers.js";
 import session from "express-session";
 import cookieParser from "cookie-parser";
@@ -29,75 +27,18 @@ app.use(
   cors({ credentials: true, origin: "https://omen-front-end.herokuapp.com" })
 );
 
-// app.use(cors());
 app.use(express.json());
 app.use(cookieParser());
 app.use(express.urlencoded({ extended: true }));
-// app.use(express.static(path.join(__dirname, 'public')));
 const sessionOptions = {
   secret: "thisisatestsecret",
   saveUninitialized: false,
   resave: false,
 };
-// app.use(session({ secret: 'Keep it secret', name: 'uniqueSessionID', saveUninitialized: false, resave: false }))
 app.use(session(sessionOptions));
-
-// const requireLogin = (req, res, next) => {
-//   if(!req.session.loggedIn){
-//       return res.redirect('/login');
-//   }
-//   next();
-// }
-
-//**TESTING ROUTE */
-//*************************************************** */
-// app.get('/test', (req, res) => {
-//   if (req.session.loggedIn)
-//     res.redirect('/userpage')
-//   else
-//     res.sendFile('index.html', { root: path.join(__dirname, '/public') })
-// })
-
-// app.get('/userpageTest', (req, res) => {
-//   if (req.session.loggedIn) {
-//     res.setHeader('Content-Type', 'text/html')
-//     res.write(`Welcome ${req.session.username} to your dashboard`)
-//     // res.write('<a href="/logout">Logout</a>')
-//     res.end()
-//   }
-//   else
-//     res.redirect('/login')
-// })
-
-app.get("/ianstest", (req, res) => {});
-//*************************************************** */
-//**TESTING ROUTE */
-
-app.get("/countview", (req, res) => {
-  if (req.session.count) {
-    req.session.count += 1;
-  } else {
-    req.session.count = 1;
-  }
-  res.send(`You have viewed this page ${req.session.count} times`);
-});
-
-app.get("/registerTwo", (req, res) => {
-  const { username = "Billy" } = req.query;
-  req.session.username = username;
-  res.redirect("/greet");
-});
-
-app.get("/greet", (req, res) => {
-  // const { username } = req.session;
-  res.send(`Welcome back`);
-});
 
 app.get("/", (req, res) => {
   res.send("Welcome to the server!");
-
-  //this test was causing an error so i took it out -ian
-  // res.redirect("/greet");
 });
 
 app.post("/register", async (req, res) => {
@@ -163,35 +104,12 @@ app.post("/missions", (req, res) => {
     );
 });
 
-app.post("/register", async (req, res) => {
-  const { first_name, last_name, password, username, email } = req.body;
-  const hash = await bcrypt.hash(password, 12);
-  const user = {
-    first_name,
-    last_name,
-    username,
-    password: hash,
-    email,
-  };
-  postNewUser(user)
-    .then((data) => res.status(201).send({ message: "User Created!" }))
-    .catch((err) =>
-      res.status(404).json({ message: "Could not create user!" })
-    );
-});
-
 app.post("/login", async (req, res) => {
   var opts = {
     maxAge: 900000,
-
-    // troubleshooting heroku
     sameSite: "none",
     secure: true,
-
-    // httpOnly: true,
     domain: "https://omen-database.herokuapp.com/",
-    // httpOnly: true,
-    // secure: true,
   };
 
   const { username, password } = req.body;
@@ -206,36 +124,6 @@ app.post("/login", async (req, res) => {
   res.cookie("userCredentials", {}, opts);
   res.cookie("isLoggedIn", true, opts);
   res.json({ success: true, user }).end();
-  // res.cookie("mark", "bo", opts);
-  // res.end();
-});
-
-// app.post("/login", async (req, res) => {
-//   const { username, password } = req.body;
-//   const user = (await getAllUsers()).find(user => user.username === username);
-// if(user) {
-//   req.session.username = user.username;
-// } else {
-//   res.redirect('/login');
-// }
-//   if (!user) return res.status(403).json({ message: 'bad login' });
-//   const match = await bcrypt.compare(password, user.password);
-//   if (!match) return res.status(403).json({ message: 'bad login' });
-//   res.status(200).json({ success: true, user });
-// })
-
-app.post("/logout", (req, res) => {
-  if (req.session) {
-    req.session.destroy((err) => {
-      if (err) {
-        res.status(400).send("Unable to log out");
-      } else {
-        res.redirect("/login");
-      }
-    });
-  } else {
-    res.end();
-  }
 });
 
 app.post("/favoritemissions", (req, res) => {
@@ -296,11 +184,6 @@ app.delete("/favoritemissions", (req, res) => {
         })
       );
   });
-  // .catch((err) =>
-  //   res
-  //     .status(404)
-  //     .json({ message: "Could not remove mission from favorites!" })
-  // );
 });
 
 app.delete("/missions/:id", (req, res) => {
